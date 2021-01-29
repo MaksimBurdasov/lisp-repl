@@ -1,10 +1,5 @@
 '''
-'(+ 1 2)' -> ['+',1,2] -> 3
-
-'(+ (* 23 2) 43)' -> ['(','+','(','*','23','2',')','43',')']
-'(12(13))' -> ['(','12','(','13',')',')'] -> [12,[13]]
-
-(<+> 1 420)
+REPL for lisp (train project)
 '''
 
 def tokenize(st):
@@ -27,8 +22,6 @@ def tokenize(st):
             token += el
     return lst
 
-print("(+ (* 23 2)   43) + 1", tokenize("(+ (* 23 2)   43) + 1"))
-
 
 def parser(tokens):
     stack = []
@@ -48,20 +41,6 @@ def parser(tokens):
             stack = stack + [el]
     return stack[0]
 
-'''
-['+',1,2]
-['*',2,3,4]
-['+',['*',1,2],4] -> myeval(['*',1,2]) -> myeval(1)
-[42,1,8]
-(= 1 2) -> nil
-(= 1 1) -> t
-(if t 13 42) -> 13
-(if nil 13 42) -> 42
-(if (= 1 2) (+ 1 2) (* 3 4)) <- дз
-лямбда исчисление
-f(f(f(x)))
-cond <- дз
-'''
 
 def my_eval(exp, globls, locls):
     if type(exp) == int or type(exp) == float:
@@ -115,6 +94,7 @@ def my_eval(exp, globls, locls):
         globls[exp[1]] = my_eval(exp[2], globls, locls)
         return exp[1]
 
+
 def convert(exp):
     if isinstance(exp, list):
         fin_exp = ''
@@ -129,13 +109,21 @@ def convert(exp):
         return 'error:' + str(exp)
 
 
-# REPL - Read Eval Print Loop
-
 globls, locls = {}, {}
-while 1:
+
+# print("(+ (* 23 2)   43) + 1", tokenize("(+ (* 23 2)   43) + 1"))
+while True:
     print(convert(my_eval(parser(tokenize(input())), globls, locls)))
-    # print(my_eval(parser(tokenize(input())), globls, locls))
 
 
-# сделать лямбда-функцию: ((lambda (x) (+ 1 x)) 42)
-# добавить обработку переменной на первом месте выражения
+'''
+Примеры конструкция в ЯП lisp с результатами их преобразования:
+'(+ 1 2)'           -> ['+',1,2] -> 3
+'(+ (* 23 2) 43)'   -> ['(','+','(','*','23','2',')','43',')']
+'(12(13))'          -> ['(','12','(','13',')',')'] -> [12,[13]]
+
+'(= 1 2)'           -> nil
+'(= 1 1)'           -> t
+'(if t 13 42)'      -> 13
+'(if nil 13 42)'    -> 42
+'''
